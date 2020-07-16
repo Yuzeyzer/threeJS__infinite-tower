@@ -39,29 +39,32 @@ const sketch = ({ context }) => {
   scene.position.y = -1;
 
   // Setup a mesh with geometry + material
+  let group = new THREE.Group();
+  scene.add(group);
+
   let number = 12;
   let rows = 10;
   let animate = [];
   let random = Array(2)
     .fill()
     .map((a) => Array(number));
-  
-  for (let i = 0; i <number; i++) {
+
+  for (let i = 0; i < number; i++) {
     for (let j = 0; j < 2; j++) {
-     random[j][i] = Math.random() < 0.5 ? 0 : 1;
+      random[j][i] = Math.random() < 0.5 ? 0 : 1;
     }
   }
 
   for (let j = 0; j < rows; j++) {
     for (let i = 0; i < number; i++) {
-      const mesh = getBrick(i, number, j % 2, random[j%2][i]);
-      const duplicate = getBrick(i, number, j % 2, random[j%2][i]);
+      const mesh = getBrick(i, number, j % 2, random[j % 2][i]);
+      const duplicate = getBrick(i, number, j % 2, random[j % 2][i]);
 
-      mesh.position.setY(j);
-      duplicate.position.setY(j);
+      mesh.position.setY(-j);
+      duplicate.position.setY(-j);
 
-      scene.add(mesh);
-      scene.add(duplicate);
+      group.add(mesh);
+      group.add(duplicate);
 
       duplicate.visible = false;
 
@@ -93,12 +96,23 @@ const sketch = ({ context }) => {
     // Update & render your scene here
     render({ time, playhead }) {
       playhead = 1 - playhead;
+      group.position.y = playhead * 2;
+
       animate.forEach((m) => {
-        m.mesh.position.setY(m.y + playhead * 2);
+        let p = playhead + m.offset;
+        // m.mesh.position.setY(m.y + playhead * 2);
 
         if (m.row < 2) {
-          let p = (playhead + m.offset) % 1;
+          let p = playhead + m.offset;
           m.mesh.position.setY(m.y + p * 10);
+          if (p > 1) {
+            m.duplicate.visible = true;
+          } else {
+            m.mesh.position.setY(m.y + p * 10);
+            m.duplicate.visible = false;
+          }
+        } else {
+          m.duplicate.visible = false;
         }
       });
       controls.update();
