@@ -1,26 +1,29 @@
 // Ensure ThreeJS is in global scope for the 'examples/'
-global.THREE = require("three");
+global.THREE = require('three');
+
+import { getBrick } from './getBrick';
 
 // Include any additional ThreeJS examples below
-require("three/examples/js/controls/OrbitControls");
+require('three/examples/js/controls/OrbitControls');
 
-const canvasSketch = require("canvas-sketch");
+const canvasSketch = require('canvas-sketch');
 
 const settings = {
   // Make the loop animated
   animate: true,
   // Get a WebGL canvas rather than 2D
-  context: "webgl"
+  context: 'webgl',
+  attributes: { antialias: true },
 };
 
 const sketch = ({ context }) => {
   // Create a renderer
   const renderer = new THREE.WebGLRenderer({
-    canvas: context.canvas
+    canvas: context.canvas,
   });
 
   // WebGL background color
-  renderer.setClearColor("#000", 1);
+  renderer.setClearColor('#000', 1);
 
   // Setup a camera
   const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
@@ -38,13 +41,19 @@ const sketch = ({ context }) => {
 
   // Setup a material
   const material = new THREE.MeshBasicMaterial({
-    color: "red",
-    wireframe: true
+    color: 'red',
+    wireframe: true,
   });
 
   // Setup a mesh with geometry + material
-  const mesh = new THREE.Mesh(geometry, material);
+  const mesh = getBrick(1, 5);
   scene.add(mesh);
+
+  scene.add(new THREE.AmbientLight('#59314f'));
+
+  const light = new THREE.PointLight('#45caf7', 1, 15.5);
+  light.position.set(2,2, -4).multiplyScalar(1.5);
+  scene.add(light)
 
   // draw each frame
   return {
@@ -64,7 +73,7 @@ const sketch = ({ context }) => {
     unload() {
       controls.dispose();
       renderer.dispose();
-    }
+    },
   };
 };
 
