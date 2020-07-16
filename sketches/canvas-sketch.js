@@ -9,6 +9,7 @@ require('three/examples/js/controls/OrbitControls');
 const canvasSketch = require('canvas-sketch');
 
 const settings = {
+  duration: 3,
   // Make the loop animated
   animate: true,
   // Get a WebGL canvas rather than 2D
@@ -27,7 +28,7 @@ const sketch = ({ context }) => {
 
   // Setup a camera
   const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
-  camera.position.set(0, 6, 6);
+  camera.position.set(0, 6, 15);
   camera.lookAt(new THREE.Vector3());
 
   // Setup camera controller
@@ -35,23 +36,31 @@ const sketch = ({ context }) => {
 
   // Setup your scene
   const scene = new THREE.Scene();
+  scene.position.y = -9;
 
   // Setup a mesh with geometry + material
   let number = 12;
-  let rows = 5;
+  let rows = 10;
+  let animate = [];
 
   for (let j = 0; j < rows; j++) {
     for (let i = 0; i < number; i++) {
-      const mesh = getBrick(i, number, j%2)
-      mesh.position.setY(j)
+      const mesh = getBrick(i, number, j % 2);
+      mesh.position.setY(j);
       scene.add(mesh);
+
+      animate.push({
+        y: j,
+        mesh: mesh,
+        offset: Math.random(),
+      });
     }
   }
 
   scene.add(new THREE.AmbientLight('#ffffff'));
 
   const light = new THREE.DirectionalLight('#ffffff', 1.5, 15.5);
-  light.position.set(2, 2, -4);
+  light.position.set(4, 2, 4);
   scene.add(light);
 
   // draw each frame
@@ -64,7 +73,10 @@ const sketch = ({ context }) => {
       camera.updateProjectionMatrix();
     },
     // Update & render your scene here
-    render({ time }) {
+    render({ time, playhead }) {
+      animate.forEach((m) => {
+        m.mesh.position.setY(m.y + playhead * 2);
+      });
       controls.update();
       renderer.render(scene, camera);
     },

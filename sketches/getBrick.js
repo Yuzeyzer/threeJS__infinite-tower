@@ -6,7 +6,7 @@ export function getBrick(index, number, odd) {
 
   let mesh = new THREE.Mesh(
     new THREE.BoxBufferGeometry(width, 1, 1),
-    new THREE.MeshLambertMaterial({ color: 0x555555 }),
+    new THREE.MeshLambertMaterial({ color: 0xcccccc }),
   );
   mesh.position.set((radius + 0.45) * Math.sin(angle), 0, (radius + 0.45) * Math.cos(angle));
   mesh.rotation.y = angle;
