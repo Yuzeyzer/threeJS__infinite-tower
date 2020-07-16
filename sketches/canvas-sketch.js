@@ -37,17 +37,21 @@ const sketch = ({ context }) => {
   const scene = new THREE.Scene();
 
   // Setup a mesh with geometry + material
-  let number = 6;
+  let number = 12;
+  let rows = 5;
 
-  for (let i = 0; i < number; i++) {
-    const mesh = getBrick(i, number);
-    scene.add(mesh);
+  for (let j = 0; j < rows; j++) {
+    for (let i = 0; i < number; i++) {
+      const mesh = getBrick(i, number, j%2)
+      mesh.position.setY(j)
+      scene.add(mesh);
+    }
   }
 
-  scene.add(new THREE.AmbientLight('#59314f'));
+  scene.add(new THREE.AmbientLight('#ffffff'));
 
-  const light = new THREE.PointLight('#45caf7', 1, 15.5);
-  light.position.set(2, 2, -4).multiplyScalar(1.5);
+  const light = new THREE.DirectionalLight('#ffffff', 1.5, 15.5);
+  light.position.set(2, 2, -4);
   scene.add(light);
 
   // draw each frame
