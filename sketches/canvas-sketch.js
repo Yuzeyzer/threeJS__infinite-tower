@@ -13,7 +13,7 @@ const settings = {
   animate: true,
   // Get a WebGL canvas rather than 2D
   context: 'webgl',
-  attributes: { antialias: true }
+  attributes: { antialias: true },
 };
 
 const sketch = ({ context }) => {
@@ -37,8 +37,12 @@ const sketch = ({ context }) => {
   const scene = new THREE.Scene();
 
   // Setup a mesh with geometry + material
-  const mesh = getBrick(1, 5);
-  scene.add(mesh);
+  let number = 6;
+
+  for (let i = 0; i < number; i++) {
+    const mesh = getBrick(i, number);
+    scene.add(mesh);
+  }
 
   scene.add(new THREE.AmbientLight('#59314f'));
 
