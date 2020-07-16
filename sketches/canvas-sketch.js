@@ -13,13 +13,13 @@ const settings = {
   animate: true,
   // Get a WebGL canvas rather than 2D
   context: 'webgl',
-  attributes: { antialias: true },
+  attributes: { antialias: true }
 };
 
 const sketch = ({ context }) => {
   // Create a renderer
   const renderer = new THREE.WebGLRenderer({
-    canvas: context.canvas,
+    context,
   });
 
   // WebGL background color
@@ -27,7 +27,7 @@ const sketch = ({ context }) => {
 
   // Setup a camera
   const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
-  camera.position.set(0, 0, -4);
+  camera.position.set(0, 6, 6);
   camera.lookAt(new THREE.Vector3());
 
   // Setup camera controller
@@ -36,15 +36,6 @@ const sketch = ({ context }) => {
   // Setup your scene
   const scene = new THREE.Scene();
 
-  // Setup a geometry
-  const geometry = new THREE.SphereGeometry(1, 32, 16);
-
-  // Setup a material
-  const material = new THREE.MeshBasicMaterial({
-    color: 'red',
-    wireframe: true,
-  });
-
   // Setup a mesh with geometry + material
   const mesh = getBrick(1, 5);
   scene.add(mesh);
@@ -52,8 +43,8 @@ const sketch = ({ context }) => {
   scene.add(new THREE.AmbientLight('#59314f'));
 
   const light = new THREE.PointLight('#45caf7', 1, 15.5);
-  light.position.set(2,2, -4).multiplyScalar(1.5);
-  scene.add(light)
+  light.position.set(2, 2, -4).multiplyScalar(1.5);
+  scene.add(light);
 
   // draw each frame
   return {
