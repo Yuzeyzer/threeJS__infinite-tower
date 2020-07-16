@@ -8,7 +8,9 @@ export function getBrick(index, number, odd, color) {
     new THREE.BoxBufferGeometry(width, 1, 1),
     new THREE.MeshLambertMaterial({ color: color? 0xcccccc : 0x333333 }),
   );
-  mesh.position.set((radius + 0.45) * Math.sin(angle), 0, (radius + 0.45) * Math.cos(angle));
+  mesh.position.set(
+    (radius + 0.45) * Math.sin(angle), 0, 
+    (radius + 0.45) * Math.cos(angle));
   mesh.rotation.y = angle;
   return mesh;
 }

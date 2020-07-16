@@ -17,6 +17,9 @@ const settings = {
   attributes: { antialias: true },
 };
 
+
+const easeInQuart = t => t*t*t*t;
+
 const sketch = ({ context }) => {
   // Create a renderer
   const renderer = new THREE.WebGLRenderer({
@@ -36,7 +39,7 @@ const sketch = ({ context }) => {
 
   // Setup your scene
   const scene = new THREE.Scene();
-  scene.position.y = -1;
+  scene.position.y = 1;
 
   // Setup a mesh with geometry + material
   let group = new THREE.Group();
@@ -45,20 +48,20 @@ const sketch = ({ context }) => {
   let number = 12;
   let rows = 10;
   let animate = [];
-  let random = Array(2)
+  let random = Array(4)
     .fill()
     .map((a) => Array(number));
 
   for (let i = 0; i < number; i++) {
-    for (let j = 0; j < 2; j++) {
+    for (let j = 0; j < 4; j++) {
       random[j][i] = Math.random() < 0.5 ? 0 : 1;
     }
   }
 
   for (let j = 0; j < rows; j++) {
     for (let i = 0; i < number; i++) {
-      const mesh = getBrick(i, number, j % 2, random[j % 2][i]);
-      const duplicate = getBrick(i, number, j % 2, random[j % 2][i]);
+      const mesh = getBrick(i, number, j % 2, random[j % 4][i]);
+      const duplicate = getBrick(i, number, j % 2, random[j % 4][i]);
 
       mesh.position.setY(-j);
       duplicate.position.setY(-j);
@@ -73,7 +76,7 @@ const sketch = ({ context }) => {
         row: j,
         mesh: mesh,
         duplicate: duplicate,
-        offset: Math.random(),
+        offset: j/4 + Math.random()/4
       });
     }
   }
@@ -95,20 +98,23 @@ const sketch = ({ context }) => {
     },
     // Update & render your scene here
     render({ time, playhead }) {
-      playhead = 1 - playhead;
-      group.position.y = playhead * 2;
+      // playhead = 1 - playhead;
+      group.position.y = -playhead * 4;
 
       animate.forEach((m) => {
         let p = playhead + m.offset;
         // m.mesh.position.setY(m.y + playhead * 2);
 
-        if (m.row < 2) {
+        if (m.row < 4) {
           let p = playhead + m.offset;
           m.mesh.position.setY(m.y + p * 10);
           if (p > 1) {
+            p = easeInQuart(p-1);
+            m.mesh.position.setY(m.y + (1-p) * 10 + playhead * 4);
             m.duplicate.visible = true;
           } else {
-            m.mesh.position.setY(m.y + p * 10);
+            p = easeInQuart(p);
+            m.mesh.position.setY(m.y + (1-p) * 10);
             m.duplicate.visible = false;
           }
         } else {
